@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
     int pid_4 = pthread_create(&m_thread_4, NULL, visionThread,  &(listVision[1]));
     
     long loop = 0;
-    while(loop < 100000000) {
+    while(loop < 100000000000) {
         sleep(1);
         loop++;
     }

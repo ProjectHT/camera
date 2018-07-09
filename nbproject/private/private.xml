@@ -8,9 +8,17 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/MyCode/project_camera/camera/main.cpp</file>
-            <file>file:/D:/MyCode/project_camera/camera/Camera.cpp</file>
-            <file>file:/D:/MyCode/project_camera/camera/Camera.h</file>
-            <file>file:/D:/MyCode/project_camera/camera/Vision.cpp</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Vision.cpp</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Clip.cpp</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Clip.h</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Photo.cpp</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/InfoVision.h</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/InfoCamera.cpp</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Photo.h</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/InfoCamera.h</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Camera.cpp</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Vision.h</file>
+            <file>file:/D:/MyCode/project_camera/camera/Vision/Camera.h</file>
         </group>
     </open-files>
 </project-private>

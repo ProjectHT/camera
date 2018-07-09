@@ -271,6 +271,7 @@ void Vision::run() {
         
         if(p_info_vision->flag_detect_face) {
             dectectFace(display);
+            sleep(2);
         }
         
     }
