@@ -41,7 +41,7 @@ Vision::~Vision() {
 void Vision::initDetectPerson() {
     hog_detect_person.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
     //cascade.load( "../../haarcascade_frontalcatface.xml" ) ; ///root/Workspace/opencv/data/haarcascades
-    cascade.load( "/root/Workspace/opencv/data/haarcascades/haarcascade_frontalcatface.xml" );
+    cascade.load( "/root/opencv-3.4.1/data/haarcascades/haarcascade_frontalface_default.xml" );
 }
 
 void Vision::dectectPerson(Mat &input, vector<Rect> &area, int &offset_x, int &offset_y) {
@@ -305,7 +305,7 @@ void Vision::dectectFace(Mat& input) {
     
     equalizeHist( smallImg, smallImg );
     
-    cascade.detectMultiScale( smallImg, faces, 1.2, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
+    cascade.detectMultiScale( smallImg, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
