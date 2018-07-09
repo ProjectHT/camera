@@ -14,6 +14,7 @@
 #include "InfoCamera.h"
 
 InfoCamera::InfoCamera() {
+    flag_save = false;
 }
 
 InfoCamera::InfoCamera(const InfoCamera& orig) {

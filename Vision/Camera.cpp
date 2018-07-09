@@ -13,6 +13,18 @@
 
 #include "Camera.h"
 
+static void* sendData(void* parameter) {
+    cout << "send" << endl;
+    string* param = (string*)parameter;
+    HTTPRequest temp;
+    string host = param[0];
+    string link = param[1];
+    string data = param[2];
+    cout << param[2] << endl;
+    temp.post(host,link,80,data);
+    pthread_exit(0);
+}
+
 Camera::Camera(InfoCamera* p_info) {
     p_info_camera = p_info;
 }
@@ -207,7 +219,7 @@ Mat Camera::convertToImage(SwsContext* img_convert, AVPacket* data, AVCodecConte
 }
 
 void Camera::compressionParamsImage(vector<int>& compression_params) {
-    compression_params.push_back( CV_IMWRITE_JPEG_QUALITY );
+    compression_params.push_back( cv::IMWRITE_JPEG_QUALITY );
     compression_params.push_back( 70 );
 }
 
@@ -215,7 +227,7 @@ void Camera::saveImage(Mat& src, vector<int>& compression_params,int& flag) {
     int index = getMs() / 100;
     if(flag != index) {
         flag = index;
-        string path = p_info_camera->link_dir + "/" + p_info_camera->name_camera + "_" + std::to_string(index) + ".jpg";
+        string path = p_info_camera->link_dir + "/camera" + p_info_camera->name_camera + "_" + std::to_string(index) + ".jpg";
         imwrite(path.c_str(), src, compression_params);
     }   
 }
@@ -243,8 +255,6 @@ bool Camera::run() {
     long index = 0;
     int flag_write = -1;
     
-    
-    
     vector<int> compression_params;
     compressionParamsImage(compression_params);
     
@@ -253,12 +263,13 @@ bool Camera::run() {
     int count_no_obj = 0;
     bool flag_have_obj;
     
+    Clip* m_clip = NULL;
+    
     while(p_info_camera->flag_run) {
         AVPacket packet;
         av_init_packet(&packet);
         if(av_read_frame(pFormatCtx, &packet) >= 0) {
             if (packet.stream_index == index_video_stream) {
-                // 108000
                 if(count < 108000) {
                     if(count == 0) {
                         pOutFormatContext = NULL;
@@ -270,11 +281,7 @@ bool Camera::run() {
                         index = packet.dts;
                         Mat m_mat = convertToImage(img_convert_ctx, &packet, pCodecCtx, picture_yuv, picture_rgb);
                         if(!m_mat.empty()) {
-                            Mat m_mat_for_show;
-                            resize(m_mat, m_mat_for_show, Size(), 0.5, 0.5, INTER_CUBIC);
-                            saveImage(m_mat_for_show, compression_params, flag_write);
-                            p_info_camera->setData(m_mat);
-                            m_mat.release();
+                            haveFrame(m_mat, (&m_clip), flag_write, compression_params);
                         }
                         packet.dts = 0;
                         count++;
@@ -285,11 +292,7 @@ bool Camera::run() {
                             index = packet.dts;
                             Mat m_mat = convertToImage(img_convert_ctx, &packet, pCodecCtx, picture_yuv, picture_rgb);
                             if(!m_mat.empty()) {
-                                Mat m_mat_for_show;
-                                resize(m_mat, m_mat_for_show, Size(), 0.5, 0.5, INTER_CUBIC);
-                                saveImage(m_mat_for_show, compression_params, flag_write);
-                                p_info_camera->setData(m_mat);
-                                m_mat.release();
+                                haveFrame(m_mat, (&m_clip), flag_write, compression_params);
                             }
                             packet.dts = count;
                             count++;
@@ -309,11 +312,7 @@ bool Camera::run() {
                     index = packet.dts;
                     Mat m_mat = convertToImage(img_convert_ctx, &packet, pCodecCtx, picture_yuv, picture_rgb);
                     if(!m_mat.empty()) {
-                        Mat m_mat_for_show;
-                        resize(m_mat, m_mat_for_show, Size(), 0.5, 0.5, INTER_CUBIC);
-                        saveImage(m_mat_for_show, compression_params, flag_write);
-                        p_info_camera->setData(m_mat);
-                        m_mat.release();
+                        haveFrame(m_mat, (&m_clip), flag_write, compression_params);
                     }
                     packet.dts = 0;
                     count = 0;
@@ -332,4 +331,85 @@ bool Camera::run() {
         avio_close(pOutFormatContext->pb);
         avformat_free_context(pOutFormatContext);
     }
+}
+
+void Camera::haveFrame (Mat & src, Clip** clip, int & index_per_second, vector<int> & compression_params_frame) {
+    if(p_info_camera->flag_save) {
+        if((*clip) == NULL) {
+            (*clip) = new Clip(src.size());
+            (*clip)->writeImage(src);
+            (*clip)->putFrame(src);
+            string data_send[3];
+            data_send[0] = "pnj.smartlook.asia";
+            data_send[1] = "/api/input_image.php";
+            data_send[2] = "session=" + (*clip)->getNameFile() + "&id_camera=" + p_info_camera->name_camera + "&url_image=http://lab.jtechgroup.co/Clip/"+ (*clip)->getNameFile()+".jpg";
+            pthread_t temp_thread;
+            int pid = pthread_create(&temp_thread, NULL, sendData, &(data_send));
+            usleep(1000);
+        } else {
+            (*clip)->putFrame(src);
+            usleep(5000);
+        } 
+    } else {
+        if((*clip) != NULL) {
+            (*clip)->stop();
+            string data_send[3];
+            data_send[0] = "pnj.smartlook.asia";
+            data_send[1] = "/api/input_video.php";
+            data_send[2] = "session=" + (*clip)->getNameFile() + "&id_camera=" + p_info_camera->name_camera + "&url_video=http://lab.jtechgroup.co/Clip/"+ (*clip)->getNameFile()+".avi";
+            pthread_t temp_thread;
+            int pid = pthread_create(&temp_thread, NULL, sendData, &(data_send));
+            usleep(1000);
+            delete (*clip);
+            (*clip) = NULL;
+        }
+    }
+    
+    /*if(p_info_camera->flag_save) {
+        count_down_frame_save
+        if((*clip) == NULL) {
+            if(count_down_frame_save < 30) {
+                count_down_frame_save++;
+            } else {
+                (*clip) = new Clip(src.size());
+                (*clip)->writeImage(src);
+                (*clip)->putFrame(src);
+                string data_send[3];
+                data_send[0] = "pnj.smartlook.asia";
+                data_send[1] = "/api/input_image.php";
+                data_send[2] = "session=" + (*clip)->getNameFile() + "&id_camera=" + p_info_camera->name_camera + "&url_image=http://lab.jtechgroup.co/Clip/"+ (*clip)->getNameFile()+".jpg";
+                pthread_t temp_thread;
+                int pid = pthread_create(&temp_thread, NULL, sendData, &(data_send));
+                usleep(1000);
+            }
+        } else {
+            count_down_frame_save = 300;
+            (*clip)->putFrame(src);
+            usleep(1000);
+        }
+    } else {
+        if((*clip) != NULL) {
+            if(count_down_frame_save != 0) {
+                count_down_frame_save--;
+                (*clip)->putFrame(src);
+                usleep(1000);
+            } else {
+                (*clip)->stop();
+                string data_send[3];
+                data_send[0] = "pnj.smartlook.asia";
+                data_send[1] = "/api/input_video.php";
+                data_send[2] = "session=" + (*clip)->getNameFile() + "&id_camera=" + p_info_camera->name_camera + "&url_video=http://lab.jtechgroup.co/Clip/"+ (*clip)->getNameFile()+".avi";
+                pthread_t temp_thread;
+                int pid = pthread_create(&temp_thread, NULL, sendData, &(data_send));
+                usleep(1000);
+                delete (*clip);
+                (*clip) = NULL;
+            }
+        }   
+    }*/
+    Mat m_mat_for_show;
+    resize(src, m_mat_for_show, Size(), 0.5, 0.5, INTER_CUBIC);
+    saveImage(m_mat_for_show, compression_params_frame, index_per_second);
+    p_info_camera->setData(src);
+    src.release();
 }

@@ -40,6 +40,8 @@ Vision::~Vision() {
 
 void Vision::initDetectPerson() {
     hog_detect_person.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
+    //cascade.load( "../../haarcascade_frontalcatface.xml" ) ; ///root/Workspace/opencv/data/haarcascades
+    cascade.load( "/root/Workspace/opencv/data/haarcascades/haarcascade_frontalcatface.xml" );
 }
 
 void Vision::dectectPerson(Mat &input, vector<Rect> &area, int &offset_x, int &offset_y) {
@@ -138,7 +140,6 @@ bool Vision::detectObj() {
             p_data_background[i] = temp;
         }
     }
-    //saveImage(background,0,compression_params);
     
     Mat temp_buffer_1 = morphologyOperations(temp_sub_background);
     Mat temp_buffer_2;
@@ -146,9 +147,6 @@ bool Vision::detectObj() {
     Mat temp_buffer_3;
     Canny(temp_buffer_2, temp_buffer_3, 5, 20, 3, false);
     
-    
-    saveImage(temp_buffer_3,2,compression_params);
-    //saveImage(temp_sub_background,2,compression_params);
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
     findContours(temp_buffer_3, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0));
@@ -156,19 +154,14 @@ bool Vision::detectObj() {
     Scalar color = Scalar(0);
     for (int i = 0; i < contours.size(); i++) {
         Rect temp_rect = boundingRect(contours[i]);
-        //if ((temp_rect.width +  temp_rect.x > temp_buffer_3.cols - 10) ||(temp_rect.height+  temp_rect.y > temp_buffer_3.rows - 10) || (temp_rect.height < 40) || (temp_rect.width < 25) || (temp_rect.x < 10) || ((temp_rect.y < 10))) {
-        //    continue;
-        //}
         if((temp_rect.height < 80) || (temp_rect.width < 40)) {
             continue;
         }
         area_step_1.push_back(temp_rect);
     }
     if(area_step_1.size() < 1) {
-        //saveImage(input,1,compression_params);
         Mat temp;
         resize(src, temp, Size(),0.25,0.25, INTER_CUBIC);
-        //saveImage(temp,3,compression_params);
         return false;
     }
     vector<Rect> person;
@@ -183,12 +176,12 @@ bool Vision::detectObj() {
         if(area_step_1.at(i).x + area_step_1.at(i).width + temp_1 < src.cols) {
             area_step_1.at(i).width += temp_1; 
         } else {
-            area_step_1.at(i).width = src.cols - area_step_1.at(i).x;
+            area_step_1.at(i).width = src.cols - area_step_1.at(i).x - 1;
         }
         if(area_step_1.at(i).y + area_step_1.at(i).height + temp_2 < src.rows) {
             area_step_1.at(i).height += temp_2; 
         } else {
-            area_step_1.at(i).height = src.rows - area_step_1.at(i).y;
+            area_step_1.at(i).height = src.rows - area_step_1.at(i).y - 1;
         }
         if(area_step_1.at(i).x > temp_1) {
             area_step_1.at(i).width += temp_1;
@@ -204,29 +197,19 @@ bool Vision::detectObj() {
             area_step_1.at(i).height += area_step_1.at(i).y;
             area_step_1.at(i).y = 0;
         }
-        Mat temp_buffer_4 = src(area_step_1.at(i));
-        vector<Rect> temp_person;
-        dectectPerson(temp_buffer_4, temp_person, area_step_1.at(i).x, area_step_1.at(i).y);
-        if(temp_person.size()> 0) {
-            person.assign(temp_person.begin(),temp_person.end());
+        if((area_step_1.at(i).height > 200) && (area_step_1.at(i).width > 100)) {
+            Mat temp_buffer_4 = src(area_step_1.at(i));
+            vector<Rect> temp_person;
+            dectectPerson(temp_buffer_4, temp_person, area_step_1.at(i).x, area_step_1.at(i).y);
+            if(temp_person.size()> 0) {
+                person.assign(temp_person.begin(),temp_person.end());
+            }
         }
     }
-    //saveImage(input,1,compression_params);
     if(area_step_1.size() < 0) {
-        //Mat temp;
-        //resize(src, temp, Size(),0.25,0.25, INTER_CUBIC);
-        //saveImage(temp,3,compression_params);
         return false;
     }
     return true;
-    //cout << "pesron : " << area_step_1.size() << endl;
-    //for(int i = 0; i < area_step_1.size(); i++) {
-    //    rectangle(src, area_step_1.at(i), Scalar(255), 8, 8, 0);
-    //}
-    
-    //Mat temp;
-    //resize(src, temp, Size(),0.25,0.25, INTER_CUBIC);
-    //saveImage(temp,3,compression_params);
 }
 
 void Vision::loadInput() {
@@ -236,7 +219,6 @@ void Vision::loadInput() {
             cvtColor(display,src,CV_BGR2GRAY);
             resize(src, input, Size(), 0.25, 0.25, INTER_CUBIC);
             GaussianBlur(input, input, Size(5, 5), 1.4, 0, 4);
-            //cout << "input size : " <<  input.cols << "x" << input.rows << endl;
             break;
         }
         usleep (10000);
@@ -244,76 +226,59 @@ void Vision::loadInput() {
 }
 
 void Vision::run() {
+    
     p_info_vision->flag_run = true;
     initDetectPerson();
     long count = 0;
     loadInput();
     VideoWriter video_debug;
-    //vector<int> compression_params;
+    vector<int> compression_params;
     compressionParamsImage(compression_params);
     bool flag_obj = false;
     long count_1_detect_obj = 0;
     long count_2_detect_obj = 0;
-    Clip* m_clip = NULL;
     while(p_info_vision->flag_run) {
         loadInput();
-        count++;
-        if(count < 300) {
-            createBackground();
-            if(count == 280) {
-                video_debug.open("/home/smartsys/my_debug_10.avi",CV_FOURCC('H', '2', '6', '4'),10, background.size(),true);
-            }
-        } else {
-            if(detectObj()) {
-                count_1_detect_obj++;
-                if(count_1_detect_obj > 10) {
-                    count_2_detect_obj = 0;
-                    flag_obj = true;
+        if(p_info_vision->flag_detect_person) {
+            count++;
+            if(count < 300) {
+                createBackground();
+                if(count == 280) {
+                    //video_debug.open("/home/smartsys/my_debug.avi",cv::VideoWriter::fourcc('X', '2', '6', '4'),10, display.size(),true);
                 }
             } else {
-                count_2_detect_obj++;
-                if(count_2_detect_obj > 150) {
-                    count_1_detect_obj = 0;
-                    flag_obj = false;
-                    if(m_clip != NULL) {
-                        m_clip->stop();
-                        string data_send[3];
-                        data_send[0] = "pnj.smartlook.asia";
-                        data_send[1] = "/api/input_video.php";
-                        data_send[2] = "session=" + m_clip->getNameFile() + "&id_camera=1" + "&url_video=http://lab.jtechgroup.co/Clip/"+m_clip->getNameFile()+".avi";
-                        pthread_t temp_thread;
-                        int pid = pthread_create(&temp_thread, NULL, sendData, &(data_send));
-                        usleep(1000);
-                        delete m_clip;
-                        m_clip = NULL;
+                if(detectObj()) {
+                    count_1_detect_obj++;
+                    if(count_1_detect_obj > 10) {
+                        count_1_detect_obj = 15;
+                        count_2_detect_obj = 0;
+                        p_info_vision->p_info_camera->flag_save = true;
+                    }
+                } else {
+                    count_2_detect_obj++;
+                    if(count_2_detect_obj > 150) {
+                        count_2_detect_obj = 160;
+                        count_1_detect_obj = 0;
+                        p_info_vision->p_info_camera->flag_save = false;
                     }
                 }
-            }
-            
-            if(flag_obj) {
-                if(m_clip == NULL) {
-                    m_clip = new Clip(display.size());
-                    m_clip->putFrame(display);
-                    string data_send[3];
-                    data_send[0] = "pnj.smartlook.asia";
-                    data_send[1] = "/api/input_image.php";
-                    data_send[2] = "session=" + m_clip->getNameFile() + "&id_camera=1" + "&url_image=http://lab.jtechgroup.co/Clip/"+m_clip->getNameFile()+".jpg";
-                    pthread_t temp_thread;
-                    int pid = pthread_create(&temp_thread, NULL, sendData, &(data_send));
-                    usleep(1000);
+                if(p_info_vision->p_info_camera->flag_save) {
+                    cout << "Have person" << endl;
                 }
-                cout << "Co nguoi" << endl;
-                m_clip->writeImage(display);
+                //video_debug.write(display);
             }
-            video_debug.write(display);
+        }
+        
+        if(p_info_vision->flag_detect_face) {
+            dectectFace(display);
         }
         
     }
-    video_debug.release();
+    //video_debug.release();
 }
 
 void Vision::compressionParamsImage(vector<int>& compression_params) {
-    compression_params.push_back( CV_IMWRITE_JPEG_QUALITY );
+    compression_params.push_back( cv::IMWRITE_JPEG_QUALITY );
     compression_params.push_back( 70 );
 }
 
@@ -326,4 +291,47 @@ int Vision::getMs() {
     timeval tp;
     gettimeofday(&tp, 0);
     return (tp.tv_usec/1000);
+}
+
+void Vision::dectectFace(Mat& input) {
+    vector<Rect> faces;
+    Mat src, gray, smallImg;
+    src = input.clone();
+    
+    cvtColor( src, gray, COLOR_BGR2GRAY ); // Convert to Gray Scale
+    double fx = 0.5;
+    
+    resize( gray, smallImg, Size(), fx, fx, INTER_LINEAR ); 
+    
+    equalizeHist( smallImg, smallImg );
+    
+    cascade.detectMultiScale( smallImg, faces, 1.2, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
+    for ( size_t i = 0; i < faces.size(); i++ )
+    {
+        Rect r = faces[i];
+        Scalar color = Scalar(255, 0, 0); // Color for Drawing tool
+        r.x = cvRound(r.x*2);
+        r.y = cvRound(r.y*2);
+        r.width = cvRound(r.width*2);
+        r.height = cvRound(r.height*2);
+        Mat crop = input(r);
+        cout << "Write img face : " << m_photo.writeImage(crop,"face",i) << endl;
+        rectangle(src,r, color, 3, 8, 0);
+        /*rectangle( src, cvPoint(cvRound(r.x*2), cvRound(r.y*2)), cvPoint(cvRound((r.x + r.width-1)*2), cvRound((r.y + r.height-1)*2)), color, 3, 8, 0);
+        if( 0.75 < aspect_ratio && aspect_ratio < 1.3 )
+        {
+            m_photo.writeImage(input(r),"face",i);
+            center.x = cvRound((r.x + r.width*0.5)*2);
+            center.y = cvRound((r.y + r.height*0.5)*2);
+            radius = cvRound((r.width + r.height)*0.25*2);
+            circle( src, center, radius, color, 3, 8, 0 );
+            rectangle( src, cvPoint(cvRound(r.x*2), cvRound(r.y*2)), cvPoint(cvRound((r.x + r.width-1)*2), cvRound((r.y + r.height-1)*2)), color, 3, 8, 0);
+        }
+        else
+            rectangle( src, cvPoint(cvRound(r.x*2), cvRound(r.y*2)), cvPoint(cvRound((r.x + r.width-1)*2), cvRound((r.y + r.height-1)*2)), color, 3, 8, 0);
+         * */
+    }
+    if(faces.size() > 0) {
+        cout << "Write img : " << m_photo.writeImage(src, "Have_face", 0) << endl;
+    }
 }

@@ -15,10 +15,15 @@
 #define CAMERA_H
 
 #include "InfoCamera.h"
+#include "Clip.h"
+#include "../Http/HTTPRequest.h"
+#include "Clip.h"
 #include <ctime>
 #include <locale>
 #include <sys/time.h>
 #include <pthread.h>
+#include <opencv/cv.hpp>
+#include <opencv2/opencv.hpp>
 
 extern "C" {
     #include <libavcodec/avcodec.h>
@@ -66,7 +71,7 @@ private:
     void compressionParamsImage(vector<int>& compression_params);
     void saveImage(Mat& src, vector<int>& compression_params,int& flag);
     
-    
+    void haveFrame (Mat & src, Clip** clip, int & index_per_second, vector<int> & compression_params_frame);
 };
 
 #endif /* CAMERA_H */

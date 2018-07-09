@@ -35,12 +35,13 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Camera.o \
-	${OBJECTDIR}/Clip.o \
-	${OBJECTDIR}/HTTPRequest.o \
-	${OBJECTDIR}/InfoCamera.o \
-	${OBJECTDIR}/InfoVision.o \
-	${OBJECTDIR}/Vision.o \
+	${OBJECTDIR}/Http/HTTPRequest.o \
+	${OBJECTDIR}/Vision/Camera.o \
+	${OBJECTDIR}/Vision/Clip.o \
+	${OBJECTDIR}/Vision/InfoCamera.o \
+	${OBJECTDIR}/Vision/InfoVision.o \
+	${OBJECTDIR}/Vision/Photo.o \
+	${OBJECTDIR}/Vision/Vision.o \
 	${OBJECTDIR}/main.o
 
 
@@ -68,35 +69,40 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/camera: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/camera ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/Camera.o: Camera.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Http/HTTPRequest.o: Http/HTTPRequest.cpp
+	${MKDIR} -p ${OBJECTDIR}/Http
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Camera.o Camera.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Http/HTTPRequest.o Http/HTTPRequest.cpp
 
-${OBJECTDIR}/Clip.o: Clip.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Vision/Camera.o: Vision/Camera.cpp
+	${MKDIR} -p ${OBJECTDIR}/Vision
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Clip.o Clip.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision/Camera.o Vision/Camera.cpp
 
-${OBJECTDIR}/HTTPRequest.o: HTTPRequest.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Vision/Clip.o: Vision/Clip.cpp
+	${MKDIR} -p ${OBJECTDIR}/Vision
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/HTTPRequest.o HTTPRequest.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision/Clip.o Vision/Clip.cpp
 
-${OBJECTDIR}/InfoCamera.o: InfoCamera.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Vision/InfoCamera.o: Vision/InfoCamera.cpp
+	${MKDIR} -p ${OBJECTDIR}/Vision
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/InfoCamera.o InfoCamera.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision/InfoCamera.o Vision/InfoCamera.cpp
 
-${OBJECTDIR}/InfoVision.o: InfoVision.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Vision/InfoVision.o: Vision/InfoVision.cpp
+	${MKDIR} -p ${OBJECTDIR}/Vision
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/InfoVision.o InfoVision.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision/InfoVision.o Vision/InfoVision.cpp
 
-${OBJECTDIR}/Vision.o: Vision.cpp
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Vision/Photo.o: Vision/Photo.cpp
+	${MKDIR} -p ${OBJECTDIR}/Vision
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision.o Vision.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision/Photo.o Vision/Photo.cpp
+
+${OBJECTDIR}/Vision/Vision.o: Vision/Vision.cpp
+	${MKDIR} -p ${OBJECTDIR}/Vision
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Vision/Vision.o Vision/Vision.cpp
 
 ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}

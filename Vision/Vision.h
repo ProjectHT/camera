@@ -21,10 +21,12 @@
 #include <sys/time.h>
 #include <opencv/cv.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/objdetect.hpp>
 
 #include "InfoVision.h"
 #include "Clip.h"
-#include "HTTPRequest.h"
+#include "../Http/HTTPRequest.h"
+#include "Photo.h"
 
 using namespace std;
 using namespace cv;
@@ -46,9 +48,9 @@ private:
     Mat src;
     Mat display;
     HOGDescriptor hog_detect_person;
+    CascadeClassifier cascade;
     InfoVision* p_info_vision;
-    vector<int> compression_params;
-    //vector<int> compression_params_jpg;
+    Photo m_photo;
     
     double measureTime(timeval& begin, timeval& end);
     Mat morphologyOperations(Mat& in);
@@ -58,7 +60,7 @@ private:
     int getMs();
     void compressionParamsImage(vector<int>& compression_params);
     void saveImage(Mat& input, int index,vector<int>& compression_params);
-    
+    void dectectFace(Mat& input);
 };
 
 #endif /* VISION_H */

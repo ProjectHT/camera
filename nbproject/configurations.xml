@@ -4,12 +4,13 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>Camera.h</itemPath>
-      <itemPath>Clip.h</itemPath>
-      <itemPath>HTTPRequest.h</itemPath>
-      <itemPath>InfoCamera.h</itemPath>
-      <itemPath>InfoVision.h</itemPath>
-      <itemPath>Vision.h</itemPath>
+      <itemPath>Vision/Camera.h</itemPath>
+      <itemPath>Vision/Clip.h</itemPath>
+      <itemPath>Http/HTTPRequest.h</itemPath>
+      <itemPath>Vision/InfoCamera.h</itemPath>
+      <itemPath>Vision/InfoVision.h</itemPath>
+      <itemPath>Vision/Photo.h</itemPath>
+      <itemPath>Vision/Vision.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -18,12 +19,13 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>Camera.cpp</itemPath>
-      <itemPath>Clip.cpp</itemPath>
-      <itemPath>HTTPRequest.cpp</itemPath>
-      <itemPath>InfoCamera.cpp</itemPath>
-      <itemPath>InfoVision.cpp</itemPath>
-      <itemPath>Vision.cpp</itemPath>
+      <itemPath>Vision/Camera.cpp</itemPath>
+      <itemPath>Vision/Clip.cpp</itemPath>
+      <itemPath>Http/HTTPRequest.cpp</itemPath>
+      <itemPath>Vision/InfoCamera.cpp</itemPath>
+      <itemPath>Vision/InfoVision.cpp</itemPath>
+      <itemPath>Vision/Photo.cpp</itemPath>
+      <itemPath>Vision/Vision.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -63,29 +65,33 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="Camera.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Http/HTTPRequest.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Camera.h" ex="false" tool="3" flavor2="0">
+      <item path="Http/HTTPRequest.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Clip.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/Camera.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Clip.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/Camera.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="HTTPRequest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/Clip.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="HTTPRequest.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/Clip.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="InfoCamera.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/InfoCamera.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="InfoCamera.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/InfoCamera.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="InfoVision.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/InfoVision.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="InfoVision.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/InfoVision.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Vision.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/Photo.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Vision.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/Photo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Vision/Vision.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Vision/Vision.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -110,29 +116,33 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="Camera.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Http/HTTPRequest.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Camera.h" ex="false" tool="3" flavor2="0">
+      <item path="Http/HTTPRequest.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Clip.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/Camera.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Clip.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/Camera.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="HTTPRequest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/Clip.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="HTTPRequest.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/Clip.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="InfoCamera.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/InfoCamera.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="InfoCamera.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/InfoCamera.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="InfoVision.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/InfoVision.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="InfoVision.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/InfoVision.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Vision.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Vision/Photo.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="Vision.h" ex="false" tool="3" flavor2="0">
+      <item path="Vision/Photo.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Vision/Vision.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Vision/Vision.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>

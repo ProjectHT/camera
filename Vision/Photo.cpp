@@ -5,27 +5,24 @@
  */
 
 /* 
- * File:   Clip.cpp
+ * File:   Photo.cpp
  * Author: phamh
  * 
- * Created on July 2, 2018, 10:58 AM
+ * Created on July 9, 2018, 1:55 PM
  */
 
-#include "Clip.h"
+#include "Photo.h"
 
-Clip::Clip(Size size_frame) {
-    name_file = getDayTime();
-    string path = "/var/www/html/Clip/" + name_file + ".avi";
-    m_clip.open(path.c_str(), CV_FOURCC('X', '2', '6', '4'), 30, size_frame, true);
+Photo::Photo() {
 }
 
-Clip::Clip(const Clip& orig) {
+Photo::Photo(const Photo& orig) {
 }
 
-Clip::~Clip() {
+Photo::~Photo() {
 }
 
-string Clip::getDayTime() {
+string Photo::getDayTime() {
     timeval tp;
     gettimeofday(&tp, 0);
     time_t nowtime;
@@ -41,23 +38,12 @@ string Clip::getDayTime() {
     return m_return;
 }
 
-string Clip::getNameFile() {
-    return name_file;
-}
-
-void Clip::putFrame(Mat& frame) {
-    if(m_clip.isOpened())
-        m_clip.write(frame);
-}
-
-void Clip::stop() {
-    m_clip.release();
-}
-
-void Clip::writeImage(Mat& frame) {
+string Photo::writeImage(Mat& frame,string name, int index) {
     vector<int> compression_params;
-    compression_params.push_back( CV_IMWRITE_JPEG_QUALITY );
+    compression_params.push_back( cv::IMWRITE_JPEG_QUALITY );
     compression_params.push_back( 100 );
-    string path = "/var/www/html/Clip/" + name_file + ".jpg";
+    string name_data = name + "-" + std::to_string(index) + "-" + getDayTime() + ".jpg";
+    string path = "/var/www/html/Face/" + name_data;
     imwrite(path.c_str(), frame, compression_params); 
+    return name_data;
 }
